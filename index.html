@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Localizador de Boletos em XMLs de NF-e</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <header>
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">🧾</div>
+        <div class="logo-text">
+          <h1>Localizador de Boletos x NF-e</h1>
+          <p>Cruzamento inteligente de parcelas, duplicatas e fornecedores em lotes de XML</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="badge-counter" id="contador-notas">
+          0 Notas (0 parcelas)
+        </div>
+        <button class="btn btn-outline-danger btn-sm" id="btn-limpar-base" title="Apaga todas as notas carregadas da memória do navegador">
+          🗑️ Limpar Base
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main>
+    <!-- Coluna Esquerda: Upload e Filtros do Boleto -->
+    <aside style="display: flex; flex-direction: column; gap: 1.25rem;">
+      
+      <!-- Card de Upload / Base de XMLs -->
+      <section class="card">
+        <div class="card-header">
+          <h2>📂 Lote de Notas Fiscais (XML)</h2>
+        </div>
+        <div class="card-body">
+          <div class="dropzone" id="dropzone">
+            <div class="dropzone-icon">📥</div>
+            <div class="dropzone-text">Arraste seus XMLs ou pasta aqui</div>
+            <div class="dropzone-subtext">Processa 600+ XMLs em menos de 1 segundo</div>
+            
+            <div class="dropzone-buttons">
+              <!-- Input para pasta inteira -->
+              <input type="file" id="file-input-folder" webkitdirectory directory multiple style="display: none;">
+              <!-- Input para múltiplos arquivos -->
+              <input type="file" id="file-input-multiple" multiple accept=".xml" style="display: none;">
+
+              <button type="button" class="btn btn-primary btn-sm" id="btn-carregar-pasta">
+                📁 Selecionar Pasta
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-carregar-arquivos">
+                📄 Arquivos Avulsos
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-top: 0.85rem; text-align: center;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-carregar-exemplos" style="width: 100%; border-style: dashed;">
+              🧪 Carregar Notas de Teste (Exemplos)
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- NOVO: Card de Leitura por Foto do Boleto -->
+      <section class="card">
+        <div class="card-header">
+          <h2>📷 Foto do Boleto (Opcional)</h2>
+        </div>
+        <div class="card-body">
+          <div class="dropzone" id="dropzone-foto" style="padding: 1rem 0.5rem;">
+            <div style="font-size: 1.8rem; margin-bottom: 0.25rem;">📸</div>
+            <div class="dropzone-text" style="font-size: 0.825rem;">Cole o Print (Ctrl+V) ou suba a foto</div>
+            <div class="dropzone-subtext" style="margin-bottom: 0.5rem;">Identifica linha digitável, valor e vencimento</div>
+            <input type="file" id="file-input-foto" accept="image/*" style="display: none;">
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-selecionar-foto">
+              🖼️ Selecionar Foto
+            </button>
+          </div>
+          <div id="foto-preview-container" style="display: none; margin-top: 0.75rem;">
+            <img id="foto-preview" style="max-width: 100%; max-height: 120px; border-radius: 6px; border: 1px solid var(--slate-300); display: block; margin: 0 auto;">
+            <div style="text-align: center; margin-top: 0.35rem;">
+              <span id="foto-status" style="font-size: 0.75rem; color: var(--primary); font-weight: 600;">Processando imagem...</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Card de Filtros / Dados do Boleto / DDA -->
+      <section class="card">
+        <div class="card-header">
+          <h2>🔍 Dados do Título / DDA a Localizar</h2>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-limpar-busca">
+            Limpar
+          </button>
+        </div>
+        <div class="card-body">
+          
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 0.65rem 0.85rem; margin-bottom: 1rem; font-size: 0.775rem; color: #166534;">
+            💡 <strong>Dica para telas de DDA:</strong> Os campos mais certeiros para achar o XML são <strong>Valor do Documento</strong>, <strong>Vencimento</strong> e o <strong>"Seu Número"</strong> (que quase sempre é o número da nota fiscal!).
+          </div>
+
+          <!-- Seletor de Modo de Prioridade / Filtro Estrito -->
+          <div class="search-form-group" style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 8px; padding: 0.75rem;">
+            <label for="filtro-prioridade" style="color: var(--primary); font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; gap: 0.35rem;">
+              🎯 Regra de Prioridade / Filtro Obrigatório:
+            </label>
+            <select id="filtro-prioridade" class="input-select" style="font-weight: 600; border-color: #93c5fd; background-color: white;">
+              <option value="relevancia">⭐ Busca Inteligente (Pontua tudo e traz os mais parecidos)</option>
+              <option value="vencimento">📅 Prioridade: VENCIMENTO (Exibe SOMENTE notas/parcelas desta data)</option>
+              <option value="valor">💰 Prioridade: VALOR (Exibe SOMENTE notas/parcelas deste valor)</option>
+              <option value="valor_vencimento">🔒 Prioridade: VALOR + VENCIMENTO (Exibe SOMENTE se bater os dois)</option>
+              <option value="numero_nf">🔢 Prioridade: "SEU NÚMERO" (Exibe SOMENTE a nota com este número)</option>
+              <option value="fornecedor">🏢 Prioridade: FORNECEDOR (Exibe SOMENTE deste fornecedor/CNPJ)</option>
+            </select>
+            <div class="input-hint" id="hint-prioridade">
+              Quando você escolhe uma prioridade, o sistema descarta todas as outras notas e mostra apenas as que atendem exatamente a esse critério!
+            </div>
+          </div>
+
+          <!-- Valor e Tolerância -->
+          <div class="input-row">
+            <div class="search-form-group">
+              <label for="filtro-valor">Valor do Documento (R$):</label>
+              <input type="number" id="filtro-valor" class="input-text" placeholder="Ex: 282.52" step="0.01">
+            </div>
+
+            <div class="search-form-group">
+              <label for="filtro-tolerancia">Tolerância de Valor:</label>
+              <select id="filtro-tolerancia" class="input-select">
+                <option value="0.00">Exato (R$ 0,00)</option>
+                <option value="0.05">± R$ 0,05</option>
+                <option value="0.50">± R$ 0,50</option>
+                <option value="2.00">± R$ 2,00</option>
+                <option value="5.00">± R$ 5,00</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Datas: Vencimento e Data do Documento -->
+          <div class="input-row">
+            <div class="search-form-group">
+              <label for="filtro-vencimento">Data do Vencimento:</label>
+              <input type="date" id="filtro-vencimento" class="input-text">
+            </div>
+
+            <div class="search-form-group">
+              <label for="filtro-data-doc">Data do Doc. (Emissão):</label>
+              <input type="date" id="filtro-data-doc" class="input-text">
+            </div>
+          </div>
+
+          <!-- Seu Número (Nº NF) e Fornecedor -->
+          <div class="input-row">
+            <div class="search-form-group">
+              <label for="filtro-seu-numero">"Seu Número" (Nº NF):</label>
+              <input type="text" id="filtro-seu-numero" class="input-text" placeholder="Ex: 7900">
+            </div>
+
+            <div class="search-form-group">
+              <label for="filtro-fornecedor">Beneficiário / CNPJ:</label>
+              <input type="text" id="filtro-fornecedor" class="input-text" placeholder="Ex: Quimiq, 41085487...">
+            </div>
+          </div>
+
+          <!-- Filtro por Empresa Destinatária (Filiais da sua Rede) -->
+          <div class="search-form-group">
+            <label for="filtro-destinatario">Filial / Empresa Pagadora (Destinatário):</label>
+            <select id="filtro-destinatario" class="input-select">
+              <option value="">Todas as empresas / filiais</option>
+            </select>
+          </div>
+
+          <!-- Linha Digitável Opcional -->
+          <div class="search-form-group">
+            <label for="filtro-linha-digitavel">Linha Digitável (se houver):</label>
+            <input type="text" id="filtro-linha-digitavel" class="input-text" placeholder="47 dígitos (opcional)">
+          </div>
+
+          <!-- Onde buscar -->
+          <div class="search-form-group">
+            <label for="filtro-modo">Onde verificar o valor?</label>
+            <select id="filtro-modo" class="input-select">
+              <option value="ambos" selected>Nas Parcelas/Duplicatas E no Total da NF</option>
+              <option value="duplicatas">Apenas nas Parcelas / Duplicatas</option>
+              <option value="total">Apenas no Valor Total da NF</option>
+            </select>
+          </div>
+
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- Coluna Direita: Resultados Ranqueados -->
+    <section>
+      <div class="results-header-summary">
+        <h2 class="results-count-title" id="resumo-resultados">
+          Aguardando arquivos XML...
+        </h2>
+        <div style="display: flex; gap: 0.5rem;">
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-exportar-csv" title="Exportar resultado para planilha Excel / CSV">
+            📊 Exportar Planilha
+          </button>
+        </div>
+      </div>
+
+      <div class="results-list" id="lista-resultados">
+        <!-- Preenchido via app.js -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal DANFE Simplificado -->
+  <div class="modal-overlay" id="modal-danfe">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-titulo">Espelho DANFE</h3>
+        <button type="button" class="btn-close" id="modal-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-corpo">
+        <!-- Conteúdo do DANFE -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="window.print()">🖨️ Imprimir DANFE</button>
+        <button type="button" class="btn btn-secondary" onclick="fecharModal()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container de Mensagens Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

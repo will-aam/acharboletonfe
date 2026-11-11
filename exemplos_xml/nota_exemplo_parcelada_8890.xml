@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+<infNFe Id="NFe28261100000000000100550010000889011811227194" versao="4.00">
+<ide>
+<cUF>28</cUF>
+<cNF>88901181</cNF>
+<natOp>VENDA DE MERCADORIAS</natOp>
+<mod>55</mod>
+<serie>1</serie>
+<nNF>8890</nNF>
+<dhEmi>2026-11-01T10:00:00-03:00</dhEmi>
+<tpNF>1</tpNF>
+<idDest>1</idDest>
+<tpImp>1</tpImp>
+<tpEmis>1</tpEmis>
+<tpAmb>1</tpAmb>
+<finNFe>1</finNFe>
+</ide>
+<emit>
+<CNPJ>12345678000199</CNPJ>
+<xNome>DISTRIBUIDORA NACIONAL DE ALIMENTOS LTDA</xNome>
+<xFant>DISTRIBUIDORA NACIONAL</xFant>
+<enderEmit>
+<xLgr>RODOVIA BR 101</xLgr>
+<nro>KM 15</nro>
+<xBairro>DISTRITO INDUSTRIAL</xBairro>
+<xMun>ARACAJU</xMun>
+<UF>SE</UF>
+</enderEmit>
+</emit>
+<dest>
+<CNPJ>08309233000263</CNPJ>
+<xNome>A.C. COMERCIO DE COMBUSTIVEIS LTDA</xNome>
+</dest>
+<total>
+<ICMSTot>
+<vProd>335.52</vProd>
+<vNF>335.52</vNF>
+</ICMSTot>
+</total>
+<cobr>
+<fat>
+<nFat>8890</nFat>
+<vOrig>335.52</vOrig>
+<vLiq>335.52</vLiq>
+</fat>
+<dup>
+<nDup>001/02</nDup>
+<dVenc>2026-11-20</dVenc>
+<vDup>167.76</vDup>
+</dup>
+<dup>
+<nDup>002/02</nDup>
+<dVenc>2026-12-20</dVenc>
+<vDup>167.76</vDup>
+</dup>
+</cobr>
+<infAdic>
+<infCpl>PAGAMENTO PARCELADO EM 2X VIA BANCO BRADESCO. COBRANCA EMITIDA POR ASSESSORIA DE RECEBIVEIS SA.</infCpl>
+</infAdic>
+</infNFe>
+</NFe>
+</nfeProc>

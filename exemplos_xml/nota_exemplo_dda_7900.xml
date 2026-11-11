@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nfeProc xmlns="http://www.portalfiscal.inf.br/nfe" versao="4.00">
+<NFe xmlns="http://www.portalfiscal.inf.br/nfe">
+<infNFe Id="NFe28261041085487000130550010000079001811227195" versao="4.00">
+<ide>
+<cUF>28</cUF>
+<cNF>79001811</cNF>
+<natOp>VENDA DE MERCADORIAS</natOp>
+<mod>55</mod>
+<serie>1</serie>
+<nNF>7900</nNF>
+<dhEmi>2026-10-14T10:30:00-03:00</dhEmi>
+<tpNF>1</tpNF>
+<idDest>1</idDest>
+<tpImp>1</tpImp>
+<tpEmis>1</tpEmis>
+<tpAmb>1</tpAmb>
+<finNFe>1</finNFe>
+</ide>
+<emit>
+<CNPJ>41085487000130</CNPJ>
+<xNome>QUIMIQ PRODUTOS SANEANTES LTDA</xNome>
+<xFant>QUIMIQ</xFant>
+<enderEmit>
+<xLgr>R. ANTONIO BARBOSA DE ARAUJO</xLgr>
+<nro>50</nro>
+<xMun>ARACAJU</xMun>
+<UF>SE</UF>
+</enderEmit>
+</emit>
+<dest>
+<CNPJ>01984422000101</CNPJ>
+<xNome>JARDINS DELICATESSEN LTDA</xNome>
+<enderDest>
+<xLgr>AV. DEPUTADO SILVIO TEIXEIRA</xLgr>
+<nro>1020</nro>
+<xCpl>LOJA</xCpl>
+<xMun>ARACAJU</xMun>
+<UF>SE</UF>
+</enderDest>
+</dest>
+<total>
+<ICMSTot>
+<vProd>282.52</vProd>
+<vNF>282.52</vNF>
+</ICMSTot>
+</total>
+<cobr>
+<fat>
+<nFat>7900</nFat>
+<vOrig>282.52</vOrig>
+<vLiq>282.52</vLiq>
+</fat>
+<dup>
+<nDup>001</nDup>
+<dVenc>2026-11-11</dVenc>
+<vDup>282.52</vDup>
+</dup>
+</cobr>
+<det nItem="1">
+<prod>
+<cProd>1020</cProd>
+<xProd>DETERGENTE SANITIZANTE INDUSTRIAL 5L</xProd>
+<qCom>4.0000</qCom>
+<vUnCom>70.6300</vUnCom>
+<vProd>282.52</vProd>
+</prod>
+</det>
+<infAdic>
+<infCpl>COBRANCA VIA BANCO SICREDI. DMI DUPLICATA MERCANTIL. PEDIDO 7900.</infCpl>
+</infAdic>
+</infNFe>
+</NFe>
+</nfeProc>
